@@ -12,6 +12,7 @@ import static com.kata.tictactoe.enums.Shape.CROSS;
 
 @Component
 public class PlayerBuilderImpl implements PlayerBuilder{
+    @Override
     public Set<Player> buildPlayers(boolean userWantsToGoFirst) {
         if (userWantsToGoFirst) {
             return Set.of(
