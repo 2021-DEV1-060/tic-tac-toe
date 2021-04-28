@@ -35,7 +35,7 @@ public class WinnerVerifierImpl implements WinnerVerifier{
     public boolean verifyIfWinnerExists(Game game) {
         Shape[] state = game.getState();
         if (state == null) {
-            log.error("[setWinner] Game has not state");
+            log.error("[setWinner] Game has no state");
             return false;
         }
         if (stepRegistry.getStepCount() < 3) {
@@ -43,23 +43,23 @@ public class WinnerVerifierImpl implements WinnerVerifier{
         }
 
         return getShapesInGameWithoutBlank(state).stream()
-                .anyMatch(shape -> gameHasWinner(shape, state, game));
+                .anyMatch(shape -> winnerShapeExists(shape, state, game));
     }
 
-    private boolean gameHasWinner(Shape shape, Shape[] state, Game game) {
-        Set<Integer> positionPerShape = new HashSet<>();
+    private boolean winnerShapeExists(Shape shape, Shape[] state, Game game) {
+        Set<Integer> positionsPerShape = new HashSet<>();
         Arrays.asList(state).forEach(shapeInState -> {
             if (shape.equals(shapeInState)) {
                 Integer index = Arrays.asList(state).indexOf(shape);
-                positionPerShape.add(index);
+                positionsPerShape.add(index);
             }
         });
-        setWinnerIfWinningCombinationExists(positionPerShape, shape, game);
+        setWinnerIfWinningCombinationExists(positionsPerShape, shape, game);
         return game.getWinner() != null;
     }
 
-    private void setWinnerIfWinningCombinationExists(Set<Integer> positionPerShape, Shape shape, Game game) {
-        if(WINNING_COMBINATIONS.contains(positionPerShape)) {
+    private void setWinnerIfWinningCombinationExists(Set<Integer> positionsPerShape, Shape shape, Game game) {
+        if(WINNING_COMBINATIONS.contains(positionsPerShape)) {
             Player winner = findWinner(shape, game);
             game.setWinner(winner);
         }
