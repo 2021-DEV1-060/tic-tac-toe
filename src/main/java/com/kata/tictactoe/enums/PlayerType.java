@@ -1,4 +1,4 @@
-package com.kata.tictactoe.enums.enums;
+package com.kata.tictactoe.enums;
 
 public enum PlayerType {
     USER,

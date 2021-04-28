@@ -1,7 +1,7 @@
-package com.kata.tictactoe.enums.domain;
+package com.kata.tictactoe.domain;
 
-import com.kata.tictactoe.enums.enums.PlayerType;
-import com.kata.tictactoe.enums.enums.Symbol;
+import com.kata.tictactoe.enums.Symbol;
+import com.kata.tictactoe.enums.PlayerType;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

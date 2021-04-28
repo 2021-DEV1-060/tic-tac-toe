@@ -1,4 +1,4 @@
-package com.kata.tictactoe.enums.enums;
+package com.kata.tictactoe.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
