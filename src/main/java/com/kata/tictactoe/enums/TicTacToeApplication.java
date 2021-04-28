@@ -1,4 +1,4 @@
-package com.kata.tictactoe;
+package com.kata.tictactoe.enums;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
