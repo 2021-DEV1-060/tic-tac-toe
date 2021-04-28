@@ -15,7 +15,7 @@ import static com.kata.tictactoe.enums.Shape.BLANK;
 public class Game {
     private Set<Player> players;
     private Player winner;
-    private Shape[] state; //TODO: check for overwriting non-blank elements in the StepRegistry's logic AND IndexOufOfBoundsException
+    private final Shape[] state; //TODO: check for overwriting non-blank elements in the StepRegistry's logic AND IndexOufOfBoundsException
 
     public Game() {
         this.state = new Shape[] {BLANK, BLANK, BLANK, BLANK, BLANK, BLANK};
