@@ -6,22 +6,24 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
+import static com.kata.tictactoe.enums.Shape.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-class SymbolTest {
+class ShapeTest {
 
     private static Stream<Arguments> values() {
         return Stream.of(
-                Arguments.of(Symbol.BLANK, " "),
-                Arguments.of(Symbol.CIRCLE, "O"),
-                Arguments.of(Symbol.CROSS, "X")
+                Arguments.of(BLANK, " "),
+                Arguments.of(CIRCLE, "O"),
+                Arguments.of(CROSS, "X")
                 );
     }
 
     @MethodSource("values")
     @ParameterizedTest
-    void testValues(Symbol symbol, String expectedAnswer) {
-        assertThat(symbol.getValue(), is(expectedAnswer));
+    void testValues(Shape shape, String expectedAnswer) {
+        assertThat(shape.getValue(), is(expectedAnswer));
     }
+
 }

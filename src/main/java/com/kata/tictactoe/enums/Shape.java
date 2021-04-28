@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum Symbol {
+public enum Shape {
     CIRCLE("O"),
     CROSS("X"),
     BLANK(" ");
