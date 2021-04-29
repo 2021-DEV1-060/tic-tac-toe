@@ -27,31 +27,27 @@ public class NextStepCalculatorImpl implements NextStepCalculator{
         Shape playersShape = player.getShape();
         //need to find starting position first
         if(!Arrays.asList(state).contains(playersShape)) {
-            int startingPosition = findStartingPosition(playersShape, state);
+            int startingPosition = findStartingPosition(state);
             if (startingPosition < 0) {
                 log.error("[calculateNextStep] Starting position could not be determined.");
             }
             return startingPosition;
         }
-
         //TODO: make subsequent steps
+
     }
 
 
-    private int findStartingPosition(Shape playersShape, Shape[] state) {
+    private int findStartingPosition(Shape[] state) {
         Integer bestChoice = tierPositionsProvider.getFirstTierCandidatePositions().get(0);
-        //checking if '5' is empty; user may have taken it.
         if (state[bestChoice].equals(BLANK)) {
             return bestChoice;
         }
-
         //TODO: Does this really need to be a list?
         List<Integer> secondTierOptions = tierPositionsProvider.getSecondTierCandidatePositions();
 
-        //considering second-tier options
         return secondTierOptions.stream()
                 .map(secondTierOption -> {
-                    //this check may be redundant because we can only get to this point if the user's only step is '5'
                     if (state[secondTierOption].equals(BLANK)) {
                         return secondTierOption;
                     }
@@ -59,5 +55,9 @@ public class NextStepCalculatorImpl implements NextStepCalculator{
                 })
                 .filter(secondTierOption -> secondTierOption > -1)
                 .findFirst().orElse(-1);
+    }
+
+    private int findSubsequentStep() {
+
     }
 }

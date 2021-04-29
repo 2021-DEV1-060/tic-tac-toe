@@ -3,6 +3,7 @@ package com.kata.tictactoe.verifier;
 import com.kata.tictactoe.domain.Game;
 import com.kata.tictactoe.domain.Player;
 import com.kata.tictactoe.enums.Shape;
+import com.kata.tictactoe.provider.WinningCombinationsProvider;
 import com.kata.tictactoe.registry.StepRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,16 +21,7 @@ import static com.kata.tictactoe.enums.Shape.BLANK;
 @RequiredArgsConstructor
 public class WinnerVerifierImpl implements WinnerVerifier{
     private final StepRegistry stepRegistry;
-    private static final Set<Set<Integer>> WINNING_COMBINATIONS = Set.of(
-            Set.of(1, 2, 3),
-            Set.of(4, 5, 6),
-            Set.of(7, 8, 9),
-            Set.of(1, 4, 7),
-            Set.of(2, 5, 8),
-            Set.of(3, 6, 9),
-            Set.of(1, 5, 9),
-            Set.of(3, 5, 7)
-    );
+    private final WinningCombinationsProvider winningCombinationsProvider;
 
     @Override
     public boolean verifyIfWinnerExists(Game game) {
@@ -59,7 +51,7 @@ public class WinnerVerifierImpl implements WinnerVerifier{
     }
 
     private void setWinnerIfWinningCombinationExists(Set<Integer> positionsPerShape, Shape shape, Game game) {
-        if(WINNING_COMBINATIONS.contains(positionsPerShape)) {
+        if(winningCombinationsProvider.getWinningCombinations().contains(positionsPerShape)) {
             Player winner = findWinner(shape, game);
             game.setWinner(winner);
         }
