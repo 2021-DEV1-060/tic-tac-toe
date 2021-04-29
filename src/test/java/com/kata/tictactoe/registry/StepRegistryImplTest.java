@@ -31,7 +31,7 @@ class StepRegistryImplTest {
 
     private static Stream<Arguments> parametersWithoutError() {
         return Stream.of(
-                Arguments.of(new Player(USER, CROSS), 1, new Shape[] {BLANK}));
+                Arguments.of(new Player(USER, CROSS), 0, new Shape[] {BLANK}));
     }
 
     @BeforeEach

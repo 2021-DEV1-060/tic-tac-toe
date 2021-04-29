@@ -19,7 +19,6 @@ import static com.kata.tictactoe.enums.Shape.BLANK;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-//TODO: remove log.info()'s once there are no bugs present
 public class NextStepCalculatorImpl implements NextStepCalculator{
     private final ScoredCombinationBuilder scoredCombinationBuilder;
     private final TierIndexesProvider tierIndexesProvider;
@@ -45,7 +44,7 @@ public class NextStepCalculatorImpl implements NextStepCalculator{
         if (state[bestChoice].equals(BLANK)) {
             return bestChoice;
         }
-        //TODO: Does this really need to be a list?
+
         List<Integer> secondTierOptions = tierIndexesProvider.getSecondTierCandidatePositions();
 
         return secondTierOptions.stream()
@@ -79,7 +78,6 @@ public class NextStepCalculatorImpl implements NextStepCalculator{
                 .map(usersPosition -> winningCombinationsProvider.getWinningCombinations().stream()
                             .filter(winningCombination -> winningCombination.contains(usersPosition))
                             .collect(Collectors.toSet()))
-                        //.findFirst().orElse(Collections.emptySet()))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
 

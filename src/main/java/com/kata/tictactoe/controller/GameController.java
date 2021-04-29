@@ -1,6 +1,5 @@
 package com.kata.tictactoe.controller;
 
-import com.kata.tictactoe.domain.Game;
 import com.kata.tictactoe.dto.GameDTO;
 import com.kata.tictactoe.service.GameService;
 import lombok.RequiredArgsConstructor;
