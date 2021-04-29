@@ -3,13 +3,16 @@ package com.kata.tictactoe.engine;
 import com.kata.tictactoe.domain.Player;
 import com.kata.tictactoe.enums.Shape;
 import com.kata.tictactoe.provider.TierPositionsProvider;
+import com.kata.tictactoe.provider.WinningCombinationsProvider;
+import com.kata.tictactoe.scorer.WinningCombinationScorer;
+import com.kata.tictactoe.sorter.WinningCombinationSorter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,6 +23,8 @@ import static com.kata.tictactoe.enums.Shape.BLANK;
 @RequiredArgsConstructor
 public class NextStepCalculatorImpl implements NextStepCalculator{
     private final TierPositionsProvider tierPositionsProvider;
+    private final WinningCombinationsProvider winningCombinationsProvider;
+    private final WinningCombinationSorter winningCombinationSorter;
 
     @Override
     //TODO: rename method
@@ -57,7 +62,19 @@ public class NextStepCalculatorImpl implements NextStepCalculator{
                 .findFirst().orElse(-1);
     }
 
-    private int findSubsequentStep() {
+    private int findSubsequentStep(Shape playersShape, Shape[] state) {
+        List<Shape> stateAsList = Arrays.asList(state);
 
+        Set<Integer> positionsWhereUsersShapeIsPresent = stateAsList.stream()
+                .filter(shape -> shape.equals(playersShape))
+                .map(stateAsList::indexOf)
+                .collect(Collectors.toSet());
+
+
+        Set<Set<Integer>> winningCombinationsWhereUsersShapeIsPresent = positionsWhereUsersShapeIsPresent.stream()
+                .map(usersPosition -> winningCombinationsProvider.getWinningCombinations().stream()
+                            .filter(winningCombination -> winningCombination.contains(usersPosition))
+                            .findFirst().orElse(Collections.emptySet()))
+                .collect(Collectors.toSet());
     }
 }

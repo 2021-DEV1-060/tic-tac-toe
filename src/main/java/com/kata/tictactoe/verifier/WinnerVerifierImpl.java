@@ -27,7 +27,7 @@ public class WinnerVerifierImpl implements WinnerVerifier{
     public boolean verifyIfWinnerExists(Game game) {
         Shape[] state = game.getState();
         if (state == null) {
-            log.error("[setWinner] Game has no state");
+            log.error("[verifyIfWinnerExists] Game has no state");
             return false;
         }
         if (stepRegistry.getStepCount() < 3) {
