@@ -19,6 +19,7 @@ import static com.kata.tictactoe.enums.Shape.BLANK;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+//TODO: remove log.info()'s once there are no bugs present
 public class NextStepCalculatorImpl implements NextStepCalculator{
     private final ScoredCombinationBuilder scoredCombinationBuilder;
     private final TierPositionsProvider tierPositionsProvider;
@@ -27,7 +28,6 @@ public class NextStepCalculatorImpl implements NextStepCalculator{
     @Override
     public int calculateNextStep(Player player, Shape[] state) {
         Shape playersShape = player.getShape();
-        //need to find starting position first
         if(!Arrays.asList(state).contains(playersShape)) {
             int startingPosition = findStartingPosition(state);
             if (startingPosition < 0) {
@@ -73,21 +73,27 @@ public class NextStepCalculatorImpl implements NextStepCalculator{
                 .collect(Collectors.toSet());
 
 
+        log.info("[findSubsequentStep] positionsWhereUsersShapeIsPresent is {}", positionsWhereUsersShapeIsPresent);
+
         Set<Set<Integer>> winningCombinationsWhereUsersShapeIsPresent = positionsWhereUsersShapeIsPresent.stream()
                 .map(usersPosition -> winningCombinationsProvider.getWinningCombinations().stream()
                             .filter(winningCombination -> winningCombination.contains(usersPosition))
                             .findFirst().orElse(Collections.emptySet()))
                 .collect(Collectors.toSet());
 
+        log.info("[findSubsequentStep] winningCombinationsWhereUsersShapeIsPresent is {}", winningCombinationsWhereUsersShapeIsPresent);
+
         Set<ScoredCombination<Integer>> scoredCombinations =
                 winningCombinationsWhereUsersShapeIsPresent.stream()
                 .map(combination -> scoredCombinationBuilder.build(opponentsShape, playersShape, state, combination))
                 .collect(Collectors.toSet());
+        log.info("[findSubsequentStep] scoredCombinations is {}", scoredCombinations);
 
         SortedSet<ScoredCombination<Integer>> sortedScoredCombinations = new TreeSet<>( new ScoredCombinationComparator());
         sortedScoredCombinations.addAll(scoredCombinations);
 
         ScoredCombination<Integer> selectedScoredCombination = sortedScoredCombinations.first();
+        log.info("[findSubsequentStep] selectedScoredCombination is {}", selectedScoredCombination);
 
         return selectedScoredCombination.getCombination().stream()
                 .filter(position -> state[position].equals(BLANK))
