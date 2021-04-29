@@ -6,8 +6,8 @@ import java.util.List;
 
 @Component
 public class TierPositionsProviderImpl implements TierPositionsProvider{
-    private final static List<Integer> FIRST_TIER_CANDIDATE_POSITIONS = List.of(5);
-    private final static List<Integer> SECOND_TIER_CANDIDATE_POSITIONS = List.of(2, 4, 6, 8);
+    private final static List<Integer> FIRST_TIER_CANDIDATE_POSITIONS = List.of(4);
+    private final static List<Integer> SECOND_TIER_CANDIDATE_POSITIONS = List.of(1, 3, 5, 7);
 
     @Override
     public List<Integer> getFirstTierCandidatePositions() {

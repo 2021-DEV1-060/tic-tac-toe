@@ -7,14 +7,14 @@ import java.util.Set;
 @Component
 public class WinningCombinationsProviderImpl implements WinningCombinationsProvider{
     private static final Set<Set<Integer>> WINNING_COMBINATIONS = Set.of(
-            Set.of(1, 2, 3),
-            Set.of(4, 5, 6),
-            Set.of(7, 8, 9),
+            Set.of(0, 1, 2),
+            Set.of(3, 4, 5),
+            Set.of(6, 7, 8),
+            Set.of(0, 3, 6),
             Set.of(1, 4, 7),
             Set.of(2, 5, 8),
-            Set.of(3, 6, 9),
-            Set.of(1, 5, 9),
-            Set.of(3, 5, 7)
+            Set.of(0, 4, 8),
+            Set.of(2, 4, 6)
     );
 
     @Override
