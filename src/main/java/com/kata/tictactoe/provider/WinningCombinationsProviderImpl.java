@@ -6,7 +6,7 @@ import java.util.Set;
 
 @Component
 public class WinningCombinationsProviderImpl implements WinningCombinationsProvider{
-    private static final Set<Set<Integer>> WINNING_COMBINATIONS = Set.of(
+    private static final Set<Set<Integer>> WINNING_COMBINATIONS_OF_INDEXES = Set.of(
             Set.of(0, 1, 2),
             Set.of(3, 4, 5),
             Set.of(6, 7, 8),
@@ -19,6 +19,6 @@ public class WinningCombinationsProviderImpl implements WinningCombinationsProvi
 
     @Override
     public Set<Set<Integer>> getWinningCombinations() {
-        return WINNING_COMBINATIONS;
+        return WINNING_COMBINATIONS_OF_INDEXES;
     }
 }

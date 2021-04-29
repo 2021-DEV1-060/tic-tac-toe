@@ -23,7 +23,7 @@ class GameTest {
         List.of(game.getState()).forEach(e -> {
             assertThat(e, is(notNullValue()));
             assertThat(e, is(BLANK));
-            assertThat(game.getState().length, is(6));
+            assertThat(game.getState().length, is(9));
         });
     }
 }

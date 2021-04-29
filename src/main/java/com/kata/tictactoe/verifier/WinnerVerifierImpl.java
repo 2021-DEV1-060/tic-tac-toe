@@ -65,8 +65,7 @@ public class WinnerVerifierImpl implements WinnerVerifier{
 
     private Set<Shape> getShapesInGameWithoutBlank(Shape[] state) {
         return Arrays.stream(state)
-                .filter(shape -> !shape.equals(BLANK)
-                )
+                .filter(shape -> !shape.equals(BLANK))
                 .collect(Collectors.toSet());
     }
 }

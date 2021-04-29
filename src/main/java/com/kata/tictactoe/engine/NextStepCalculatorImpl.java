@@ -4,7 +4,7 @@ import com.kata.tictactoe.builder.ScoredCombinationBuilder;
 import com.kata.tictactoe.domain.Player;
 import com.kata.tictactoe.domain.ScoredCombination;
 import com.kata.tictactoe.enums.Shape;
-import com.kata.tictactoe.provider.TierPositionsProvider;
+import com.kata.tictactoe.provider.TierIndexesProvider;
 import com.kata.tictactoe.provider.WinningCombinationsProvider;
 import com.kata.tictactoe.comparator.ScoredCombinationComparator;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import static com.kata.tictactoe.enums.Shape.BLANK;
 //TODO: remove log.info()'s once there are no bugs present
 public class NextStepCalculatorImpl implements NextStepCalculator{
     private final ScoredCombinationBuilder scoredCombinationBuilder;
-    private final TierPositionsProvider tierPositionsProvider;
+    private final TierIndexesProvider tierIndexesProvider;
     private final WinningCombinationsProvider winningCombinationsProvider;
 
     @Override
@@ -41,12 +41,12 @@ public class NextStepCalculatorImpl implements NextStepCalculator{
     }
 
     private int findStartingPosition(Shape[] state) {
-        Integer bestChoice = tierPositionsProvider.getFirstTierCandidatePositions().get(0);
+        Integer bestChoice = tierIndexesProvider.getFirstTierCandidatePositions().get(0);
         if (state[bestChoice].equals(BLANK)) {
             return bestChoice;
         }
         //TODO: Does this really need to be a list?
-        List<Integer> secondTierOptions = tierPositionsProvider.getSecondTierCandidatePositions();
+        List<Integer> secondTierOptions = tierIndexesProvider.getSecondTierCandidatePositions();
 
         return secondTierOptions.stream()
                 .map(secondTierOption -> {
@@ -78,7 +78,9 @@ public class NextStepCalculatorImpl implements NextStepCalculator{
         Set<Set<Integer>> winningCombinationsWhereUsersShapeIsPresent = positionsWhereUsersShapeIsPresent.stream()
                 .map(usersPosition -> winningCombinationsProvider.getWinningCombinations().stream()
                             .filter(winningCombination -> winningCombination.contains(usersPosition))
-                            .findFirst().orElse(Collections.emptySet()))
+                            .collect(Collectors.toSet()))
+                        //.findFirst().orElse(Collections.emptySet()))
+                .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
 
         log.info("[findSubsequentStep] winningCombinationsWhereUsersShapeIsPresent is {}", winningCombinationsWhereUsersShapeIsPresent);
@@ -87,13 +89,13 @@ public class NextStepCalculatorImpl implements NextStepCalculator{
                 winningCombinationsWhereUsersShapeIsPresent.stream()
                 .map(combination -> scoredCombinationBuilder.build(opponentsShape, playersShape, state, combination))
                 .collect(Collectors.toSet());
-        log.info("[findSubsequentStep] scoredCombinations is {}", scoredCombinations);
+        scoredCombinations.forEach(scoredCombination -> log.info("[findSubsequentStep] scoredCombinations is {}", scoredCombination));
 
         SortedSet<ScoredCombination<Integer>> sortedScoredCombinations = new TreeSet<>( new ScoredCombinationComparator());
         sortedScoredCombinations.addAll(scoredCombinations);
 
         ScoredCombination<Integer> selectedScoredCombination = sortedScoredCombinations.first();
-        log.info("[findSubsequentStep] selectedScoredCombination is {}", selectedScoredCombination);
+        log.info("[findSubsequentStep] selectedScoredCombination is {}", selectedScoredCombination.getCombination());
 
         return selectedScoredCombination.getCombination().stream()
                 .filter(position -> state[position].equals(BLANK))

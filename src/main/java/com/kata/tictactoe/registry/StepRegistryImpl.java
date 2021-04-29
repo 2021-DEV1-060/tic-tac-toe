@@ -14,19 +14,17 @@ import static com.kata.tictactoe.enums.Shape.BLANK;
 public class StepRegistryImpl implements StepRegistry{
     private int stepCount;
     @Override
-    public void registerStep(Player player, int desiredPosition, Shape[] state) {
+    public void registerStep(Player player, int desiredIndex, Shape[] state) {
         if (state == null) {
             log.debug("[registerStep] State is null");
             return;
         }
-
-        int desiredPositionAsArrayIndex = desiredPosition -1;
-        if (desiredPositionAsArrayIndex < 0 || desiredPositionAsArrayIndex > state.length || positionIsTaken(desiredPositionAsArrayIndex, state)) {
-            log.error("[registerStep]  Position is invalid.");
+        if (desiredIndex < 0 || desiredIndex > state.length || positionIsTaken(desiredIndex, state)) {
+            log.error("[registerStep]  Index {} attempted by {} is invalid.", desiredIndex, player.getPlayerType());
             return;
         }
 
-        state[desiredPositionAsArrayIndex] = player.getShape();
+        state[desiredIndex] = player.getShape();
         stepCount++;
     }
 

@@ -29,12 +29,14 @@ public class GameServiceImpl implements GameService{
 
     @Override
     public GameDTO updateGame(PlayerType playerType, int desiredPosition) {
-        Player currentPlayer = findCurrentPlayer(playerType);
+        Player currentPlayer = findPlayer(playerType);
         if (USER.equals(playerType)) {
-            stepRegistry.registerStep(currentPlayer, desiredPosition, game.getState());
+            stepRegistry.registerStep(currentPlayer, desiredPosition-1, game.getState());
         }
-        int cPUsStep = nextStepCalculator.calculateNextStep(currentPlayer, game.getState());
-        stepRegistry.registerStep(currentPlayer, cPUsStep, game.getState());
+        Player theCPU = findPlayer(CPU);
+        int cPUsStep = nextStepCalculator.calculateNextStep(theCPU, game.getState());
+        log.info("[updateGame] CPU has chosen index {}", cPUsStep);
+        stepRegistry.registerStep(theCPU, cPUsStep, game.getState());
         winnerVerifier.verifyIfWinnerExists(game);
         return gameDTOBuilder.build(game);
     }
@@ -43,7 +45,7 @@ public class GameServiceImpl implements GameService{
     public GameDTO setUp(boolean userGoesFirst) {
         game.setPlayers(playerBuilder.buildPlayers(userGoesFirst));
         if (!userGoesFirst) {
-            Player theCPU = findCurrentPlayer(CPU);
+            Player theCPU = findPlayer(CPU);
             if (theCPU == null) {
                 log.error("[setUp] the CPU is not present.");
                 return null;
@@ -53,7 +55,7 @@ public class GameServiceImpl implements GameService{
         return gameDTOBuilder.build(game);
     }
 
-    private Player findCurrentPlayer(PlayerType playerType) {
+    private Player findPlayer(PlayerType playerType) {
         return game.getPlayers().stream()
                 .filter(player -> playerType.equals(player.getPlayerType()))
                 .findFirst().orElse(null);
