@@ -1,19 +1,17 @@
 package com.kata.tictactoe.engine;
 
+import com.kata.tictactoe.builder.ScoredCombinationBuilder;
 import com.kata.tictactoe.domain.Player;
+import com.kata.tictactoe.domain.ScoredCombination;
 import com.kata.tictactoe.enums.Shape;
 import com.kata.tictactoe.provider.TierPositionsProvider;
 import com.kata.tictactoe.provider.WinningCombinationsProvider;
-import com.kata.tictactoe.scorer.WinningCombinationScorer;
-import com.kata.tictactoe.sorter.WinningCombinationSorter;
+import com.kata.tictactoe.comparator.ScoredCombinationComparator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.kata.tictactoe.enums.Shape.BLANK;
@@ -22,12 +20,11 @@ import static com.kata.tictactoe.enums.Shape.BLANK;
 @Component
 @RequiredArgsConstructor
 public class NextStepCalculatorImpl implements NextStepCalculator{
+    private final ScoredCombinationBuilder scoredCombinationBuilder;
     private final TierPositionsProvider tierPositionsProvider;
     private final WinningCombinationsProvider winningCombinationsProvider;
-    private final WinningCombinationSorter winningCombinationSorter;
 
     @Override
-    //TODO: rename method
     public int calculateNextStep(Player player, Shape[] state) {
         Shape playersShape = player.getShape();
         //need to find starting position first
@@ -38,10 +35,10 @@ public class NextStepCalculatorImpl implements NextStepCalculator{
             }
             return startingPosition;
         }
-        //TODO: make subsequent steps
-
+        Shape opponentsShape = Arrays.stream(Shape.values())
+                .filter(shape -> !shape.equals(playersShape)).findFirst().orElse(null);
+        return findSubsequentStep(playersShape, opponentsShape, state);
     }
-
 
     private int findStartingPosition(Shape[] state) {
         Integer bestChoice = tierPositionsProvider.getFirstTierCandidatePositions().get(0);
@@ -62,7 +59,12 @@ public class NextStepCalculatorImpl implements NextStepCalculator{
                 .findFirst().orElse(-1);
     }
 
-    private int findSubsequentStep(Shape playersShape, Shape[] state) {
+    private int findSubsequentStep(Shape playersShape, Shape opponentsShape, Shape[] state) {
+        if (opponentsShape == null) {
+            log.error("[findSubsequentStep] Opponent's shape not found.");
+            return -1;
+        }
+
         List<Shape> stateAsList = Arrays.asList(state);
 
         Set<Integer> positionsWhereUsersShapeIsPresent = stateAsList.stream()
@@ -76,5 +78,19 @@ public class NextStepCalculatorImpl implements NextStepCalculator{
                             .filter(winningCombination -> winningCombination.contains(usersPosition))
                             .findFirst().orElse(Collections.emptySet()))
                 .collect(Collectors.toSet());
+
+        Set<ScoredCombination<Integer>> scoredCombinations =
+                winningCombinationsWhereUsersShapeIsPresent.stream()
+                .map(combination -> scoredCombinationBuilder.build(opponentsShape, playersShape, state, combination))
+                .collect(Collectors.toSet());
+
+        SortedSet<ScoredCombination<Integer>> sortedScoredCombinations = new TreeSet<>( new ScoredCombinationComparator());
+        sortedScoredCombinations.addAll(scoredCombinations);
+
+        ScoredCombination<Integer> selectedScoredCombination = sortedScoredCombinations.first();
+
+        return selectedScoredCombination.getCombination().stream()
+                .filter(position -> state[position].equals(BLANK))
+                .findFirst().orElse(-1);
     }
 }
