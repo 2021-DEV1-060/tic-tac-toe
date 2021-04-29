@@ -6,5 +6,4 @@ import java.util.List;
 public interface TierPositionsProvider {
     List<Integer> getFirstTierCandidatePositions();
     List<Integer> getSecondTierCandidatePositions();
-    List<Integer> getThirdTierCandidatePositions();
 }

@@ -18,6 +18,6 @@ public class Game {
     private final Shape[] state;
 
     public Game() {
-        this.state = new Shape[] {BLANK, BLANK, BLANK, BLANK, BLANK, BLANK};
+        this.state = new Shape[] {BLANK, BLANK, BLANK, BLANK, BLANK, BLANK, BLANK, BLANK, BLANK,};
     }
 }

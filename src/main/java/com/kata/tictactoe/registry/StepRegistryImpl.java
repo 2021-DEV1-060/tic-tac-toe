@@ -20,12 +20,13 @@ public class StepRegistryImpl implements StepRegistry{
             return;
         }
 
-        if (desiredPosition < 0 || desiredPosition > state.length || positionIsTaken(desiredPosition, state)) {
+        int desiredPositionAsArrayIndex = desiredPosition -1;
+        if (desiredPositionAsArrayIndex < 0 || desiredPositionAsArrayIndex > state.length || positionIsTaken(desiredPositionAsArrayIndex, state)) {
             log.error("[registerStep]  Position is invalid.");
             return;
         }
 
-        state[desiredPosition] = player.getShape();
+        state[desiredPositionAsArrayIndex] = player.getShape();
         stepCount++;
     }
 

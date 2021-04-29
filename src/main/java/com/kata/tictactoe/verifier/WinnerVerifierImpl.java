@@ -30,7 +30,7 @@ public class WinnerVerifierImpl implements WinnerVerifier{
             log.error("[verifyIfWinnerExists] Game has no state");
             return false;
         }
-        if (stepRegistry.getStepCount() < 3) {
+        if (stepRegistry.getStepCount() < 5) {
             return false;
         }
 

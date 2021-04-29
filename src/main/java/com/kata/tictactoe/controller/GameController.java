@@ -1,24 +1,26 @@
-package com.kata.tictactoe;
+package com.kata.tictactoe.controller;
 
 import com.kata.tictactoe.domain.Game;
+import com.kata.tictactoe.dto.GameDTO;
 import com.kata.tictactoe.service.GameService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import static com.kata.tictactoe.enums.PlayerType.USER;
 
-@RestController("/")
+@RestController
+@RequestMapping("/tic-tac-toe")
 @RequiredArgsConstructor
 public class GameController {
     private final GameService gameService;
 
-    @GetMapping("/who_starts_first")
-    public Game indicateWhoStartsFirst(@RequestParam("user_goes_first") boolean userGoesFirst) {
+    @GetMapping("/who_goes_first")
+    public GameDTO indicateWhoStartsFirst(@RequestParam("user_goes_first") boolean userGoesFirst) {
         return gameService.setUp(userGoesFirst);
     }
 
     @GetMapping("/user_chooses")
-    public Game registerUsersChoice(@RequestParam("chosen_step") int chosenStep) {
-        return gameService.play(USER, chosenStep);
+    public GameDTO registerUsersChoice(@RequestParam("chosen_step") int chosenStep) {
+        return gameService.updateGame(USER, chosenStep);
     }
 }

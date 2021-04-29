@@ -1,39 +1,46 @@
 package com.kata.tictactoe.service;
 
+import com.kata.tictactoe.builder.GameDTOBuilder;
 import com.kata.tictactoe.builder.PlayerBuilder;
 import com.kata.tictactoe.domain.Game;
 import com.kata.tictactoe.domain.Player;
+import com.kata.tictactoe.dto.GameDTO;
 import com.kata.tictactoe.engine.NextStepCalculator;
 import com.kata.tictactoe.enums.PlayerType;
 import com.kata.tictactoe.registry.StepRegistry;
+import com.kata.tictactoe.verifier.WinnerVerifier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import static com.kata.tictactoe.enums.PlayerType.CPU;
+import static com.kata.tictactoe.enums.PlayerType.USER;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class GameServiceImpl implements GameService{
     private final Game game;
+    private final GameDTOBuilder gameDTOBuilder;
     private final NextStepCalculator nextStepCalculator;
     private final PlayerBuilder playerBuilder;
     private final StepRegistry stepRegistry;
+    private final WinnerVerifier winnerVerifier;
 
     @Override
-    public Game play(PlayerType playerType, int desiredPosition) {
+    public GameDTO updateGame(PlayerType playerType, int desiredPosition) {
         Player currentPlayer = findCurrentPlayer(playerType);
-        if (CPU.equals(playerType)) {
-            int cPUsStep = nextStepCalculator.calculateNextStep(currentPlayer, game.getState());
-            stepRegistry.registerStep(currentPlayer, cPUsStep, game.getState());
+        if (USER.equals(playerType)) {
+            stepRegistry.registerStep(currentPlayer, desiredPosition, game.getState());
         }
-        stepRegistry.registerStep(currentPlayer, desiredPosition, game.getState());
-        return game;
+        int cPUsStep = nextStepCalculator.calculateNextStep(currentPlayer, game.getState());
+        stepRegistry.registerStep(currentPlayer, cPUsStep, game.getState());
+        winnerVerifier.verifyIfWinnerExists(game);
+        return gameDTOBuilder.build(game);
     }
 
     @Override
-    public Game setUp(boolean userGoesFirst) {
+    public GameDTO setUp(boolean userGoesFirst) {
         game.setPlayers(playerBuilder.buildPlayers(userGoesFirst));
         if (!userGoesFirst) {
             Player theCPU = findCurrentPlayer(CPU);
@@ -41,9 +48,9 @@ public class GameServiceImpl implements GameService{
                 log.error("[setUp] the CPU is not present.");
                 return null;
             }
-            return play(CPU, nextStepCalculator.calculateNextStep(theCPU, game.getState()));
+            return updateGame(CPU, nextStepCalculator.calculateNextStep(theCPU, game.getState()));
         }
-        return game;
+        return gameDTOBuilder.build(game);
     }
 
     private Player findCurrentPlayer(PlayerType playerType) {
