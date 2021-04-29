@@ -32,6 +32,7 @@ public class GameServiceImpl implements GameService{
         Player currentPlayer = findPlayer(playerType);
         if (USER.equals(playerType)) {
             stepRegistry.registerStep(currentPlayer, desiredPosition-1, game.getState());
+            winnerVerifier.verifyIfWinnerExists(game);
         }
         Player theCPU = findPlayer(CPU);
         int cPUsStep = nextStepCalculator.calculateNextStep(theCPU, game.getState());
